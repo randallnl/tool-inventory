@@ -25,6 +25,10 @@ npm run build
 npm run preview
 ```
 
+The build command generates `worker-configuration.d.ts` before TypeScript runs,
+so clean CI and Cloudflare builds do not depend on a generated file being
+committed.
+
 ## Cloudflare setup
 
 The monday.com API token is already connected through the account-level

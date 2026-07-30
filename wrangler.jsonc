@@ -15,6 +15,9 @@
       "secret_name": "Central_Monday_API_TOKEN"
     }
   ],
+  "secrets": {
+    "required": ["MONDAY_BOARD_ID"]
+  },
   "observability": {
     "enabled": true,
     "logs": {
