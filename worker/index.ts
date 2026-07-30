@@ -4,7 +4,26 @@ import { fetchAllInventory } from "./monday";
 
 const app = new Hono<{ Bindings: Env }>();
 
-app.use("*", secureHeaders());
+app.use(
+  "*",
+  secureHeaders({
+    xFrameOptions: false,
+    contentSecurityPolicy: {
+      frameAncestors: [
+        "'self'",
+        "https://queerlective.com",
+        "https://www.queerlective.com",
+        "https://*.myshopify.com",
+        "https://admin.shopify.com",
+      ],
+    },
+  }),
+);
+
+app.get("/embed", async (context) => {
+  const response = await context.env.ASSETS.fetch(context.req.raw);
+  return new Response(response.body, response);
+});
 
 app.get("/api/health", (context) =>
   context.json({

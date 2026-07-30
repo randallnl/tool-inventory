@@ -15,7 +15,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { demoInventory } from "./demo-data";
 import type { InventoryItem, InventoryResponse } from "./types";
 
@@ -28,6 +28,10 @@ async function fetchInventory(): Promise<InventoryResponse> {
 }
 
 function App() {
+  const embedded =
+    window.location.pathname === "/embed" ||
+    new URLSearchParams(window.location.search).has("embed") ||
+    window.self !== window.top;
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All categories");
   const [location, setLocation] = useState("All locations");
@@ -76,8 +80,36 @@ function App() {
     setInStockOnly(false);
   };
 
+  useEffect(() => {
+    if (!embedded) return;
+
+    document.documentElement.classList.add("embed-page");
+    let animationFrame = 0;
+    const reportHeight = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        window.parent.postMessage(
+          {
+            type: "colab-inventory:resize",
+            height: document.documentElement.scrollHeight,
+          },
+          "*",
+        );
+      });
+    };
+    const observer = new ResizeObserver(reportHeight);
+    observer.observe(document.body);
+    reportHeight();
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(animationFrame);
+      document.documentElement.classList.remove("embed-page");
+    };
+  }, [embedded]);
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${embedded ? "embedded" : ""}`}>
       <header className="topbar">
         <a className="brand" href="/" aria-label="CoLab Inventory home">
           <span className="brand-mark"><Boxes size={22} /></span>
@@ -132,7 +164,7 @@ function App() {
           {isDemo && (
             <div className="demo-banner">
               <span><Sparkles size={16} /> Showing sample inventory until monday.com is connected.</span>
-              <a href="#setup">Connection setup <ArrowRight size={14} /></a>
+              {!embedded && <a href="#setup">Connection setup <ArrowRight size={14} /></a>}
             </div>
           )}
 

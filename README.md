@@ -44,3 +44,43 @@ When the initial build is approved, deploy with:
 ```bash
 npm run deploy
 ```
+
+## Embed in Shopify
+
+The `/embed` route removes the app header, setup section, and footer, uses tighter
+spacing, and sends its current content height to the parent page. After replacing
+the example host with the deployed Worker URL, add this to a Shopify **Custom
+Liquid** section:
+
+```liquid
+<div style="width: 100%; max-width: 1400px; margin: 0 auto;">
+  <iframe
+    id="colab-inventory-frame"
+    src="https://YOUR-WORKER-URL.workers.dev/embed"
+    title="CoLab community inventory"
+    loading="lazy"
+    style="display: block; width: 100%; min-height: 900px; border: 0;"
+  ></iframe>
+</div>
+
+<script>
+  (() => {
+    const frame = document.getElementById("colab-inventory-frame");
+    if (!frame) return;
+    const frameOrigin = new URL(frame.src).origin;
+
+    window.addEventListener("message", (event) => {
+      if (event.source !== frame.contentWindow || event.origin !== frameOrigin) return;
+      if (event.data?.type !== "colab-inventory:resize") return;
+
+      const height = Number(event.data.height);
+      if (Number.isFinite(height)) {
+        frame.style.height = `${Math.max(700, height)}px`;
+      }
+    });
+  })();
+</script>
+```
+
+The Worker permits framing only from `queerlective.com`, its `www` host,
+`*.myshopify.com`, Shopify Admin, and itself.
