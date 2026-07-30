@@ -125,8 +125,6 @@ function App() {
 
       <main>
         <section className="hero">
-          <div className="eyebrow"><Sparkles size={14} /> Shared resources, made simple</div>
-          <h1>Find what you need.<br /><em>Make something great.</em></h1>
           <p>Browse tools, equipment, and creative resources available across the CoLab community.</p>
           <label className="hero-search">
             <Search size={21} />
