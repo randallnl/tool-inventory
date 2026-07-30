@@ -125,21 +125,33 @@ function App() {
 
       <main>
         <section className="hero">
-          <p>Browse tools, equipment, and creative resources available across the CoLab community.</p>
-          <label className="hero-search">
-            <Search size={21} />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search cameras, tools, event supplies…"
-              aria-label="Search inventory"
+          <div className="hero-layout">
+            <img
+              className="hero-logo"
+              src="https://cdn.shopify.com/s/files/1/0605/0535/8543/files/CoLab_Logo.png?v=1785375429"
+              alt="CoLab"
+              width="4500"
+              height="3000"
+              fetchPriority="high"
             />
-            <kbd>⌘ K</kbd>
-          </label>
-          <div className="hero-stats">
-            <span><strong>{items.length}</strong> listed resources</span>
-            <span><strong>{categories.length}</strong> categories</span>
-            <span><strong>{items.filter((item) => item.inStock).length}</strong> available now</span>
+            <div className="hero-copy">
+              <p>Browse tools, equipment, and creative resources available across the CoLab community.</p>
+              <label className="hero-search">
+                <Search size={21} />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search cameras, tools, event supplies…"
+                  aria-label="Search inventory"
+                />
+                <kbd>⌘ K</kbd>
+              </label>
+              <div className="hero-stats">
+                <span><strong>{items.length}</strong> listed resources</span>
+                <span><strong>{categories.length}</strong> categories</span>
+                <span><strong>{items.filter((item) => item.inStock).length}</strong> available now</span>
+              </div>
+            </div>
           </div>
         </section>
 
